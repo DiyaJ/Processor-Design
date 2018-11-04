@@ -1,35 +1,76 @@
 `timescale 1ns / 1ps
 module SEC(
-    input enable,
     input [31:0] data,
-    input [6:0] parity_bits,
-    output[31:0] sec_corrected_data,
-    output[6:0] sec_corrected_parity,
-    output single_error,
-    output [6:0] error_location
+    input [5:0] parity,
+    output reg[31:0] sec_corrected_data,
+    output reg[5:0] sec_corrected_parity,
+    output reg single_error,
+    output [5:0] error_location
 );
-
-    
-
-    always @(*)
+ wire select_done;
+ integer i;
+ initial
+   begin
+     sec_corrected_data = data;
+     sec_corrected_parity = parity;
+     single_error = 1'b0;
+   end
+ 
         begin
-            if (enable == 1'b1)
-                assign error_location[0] = parity_bits[0] xor data[0] xor data[1] xor data[3] xor data[4] xor data[6] xor data[8] xor data[10] xor data[11] xor data[13] xor data[15] xor data[17] xor data[19] xor data[21] xor data[23] xor data[25] xor data[26] xor data[28] xor data[30];
-                assign error_location[1] = parity_bits[1] xor data[0] xor data[2] xor data[3] xor data[5] xor data[6] xor data[9] xor data[10] xor data[12] xor data[13] xor data[16] xor data[17] xor data[20] xor data[21] xor data[24] xor data[25] xor data[27] xor data[28] xor data[31];
-                assign error_location[2] = parity_bits[2] xor data[1] xor data[2] xor data[3] xor data[7] xor data[8] xor data[9] xor data[10] xor data[14] xor data[15] xor data[16] xor data[17] xor data[22] xor data[23] xor data[24] xor data[25] xor data[29] xor data[30] xor data[31];
-                assign error_location[3] = parity_bits[3] xor data[4] xor data[5] xor data[6] xor data[7] xor data[8] xor data[9] xor data[10] xor data[18] xor data[19] xor data[20] xor data[21] xor data[22] xor data[23] xor data[24] xor data[25];
-                assign error_location[4] = parity_bits[4] xor data[11] xor data[12] xor data[13] xor data[14] xor data[15] xor data[16] xor data[17] xor data[18] xor data[19] xor data[20] xor data[21] xor data[22] xor data[23] xor data[24] xor data[25];
-                assign error_location[5] = parity_bits[5] xor data[26] xor data[27] xor data[28] xor data[29] xor data[30] xor data[31]; 
-                assign error_location[6] = parity_bits[6] xor data[0] xor data[1] xor data[3] xor data[4] xor data[6] xor data[7] xor data[8] xor data[9] xor data[10] xor data[11] xor data[12] xor data[13] xor data[14] xor data[15] xor data[16] xor data[17] xor data[18] xor data[19] xor data[20] xor data[21] xor data[22] xor data[23] xor data[24] xor data[25] xor data[26] xor data[27] xor data[28] xor data[29] xor data[30] xor data[31] xor parity[8] ;
-
-             
-                assign single_error = error_location[0] and error_location[1] and error_location[2] and error_location[3] and error_location[4] and error_location[5] and error_location[6]               
+                assign select_done = 1'b0;              
+                assign error_location[0] = parity[0] ^ data[0] ^ data[1] ^ data[3] ^ data[4] ^ data[6] ^ data[8] ^ data[10] ^ data[11] ^ data[13] ^ data[15] ^ data[17] ^ data[19] 
+                                           ^ data[21] ^ data[23] ^ data[25] ^ data[26] ^ data[28] ^ data[30];
+                assign error_location[1] = parity[1] ^ data[0] ^ data[2] ^ data[3] ^ data[5] ^ data[6] ^ data[9] ^ data[10] ^ data[12] ^ data[13] ^ data[16] ^ data[17] ^ data[20]
+                                           ^ data[21] ^ data[24] ^ data[25] ^ data[27] ^ data[28] ^ data[31];
+                assign error_location[2] = parity[2] ^ data[1] ^ data[2] ^ data[3] ^ data[7] ^ data[8] ^ data[9] ^ data[10] ^ data[14] ^ data[15] ^ data[16] ^ data[17] ^ data[22] 
+                                           ^ data[23] ^ data[24] ^ data[25] ^ data[29] ^ data[30] ^ data[31];
+                assign error_location[3] = parity[3] ^ data[4] ^ data[5] ^ data[6] ^ data[7] ^ data[8] ^ data[9] ^ data[10] ^ data[18] ^ data[19] ^ data[20] ^ data[21] ^ data[22] 
+                                           ^ data[23] ^ data[24] ^ data[25];
+                assign error_location[4] = parity[4] ^ data[11] ^ data[12] ^ data[13] ^ data[14] ^ data[15] ^ data[16] ^ data[17] ^ data[18] ^ data[19] ^ data[20] ^ data[21] 
+                                           ^ data[22] ^ data[23] ^ data[24] ^ data[25];
+                assign error_location[5] = parity[5] ^ data[26] ^ data[27] ^ data[28] ^ data[29] ^ data[30] ^ data[31]; 
+               
                 
-               // correct the data
-             
-                
+                        
+                assign select_done = 1'b1;
+            
+                            
         end   
+        always @(select_done)
+             begin
+                 if(error_location == 1 || error_location ==2 || error_location ==4 || error_location ==8 || error_location ==16 ||  error_location == 32)
+                    begin
+                      for( i =0; i<=5; i = i+1)
+                        begin
+                          if(error_location[i] == 1)
+                           begin
+                           sec_corrected_parity[i] = ~sec_corrected_parity[i];  
+                           end
+                        end 
+                                             
+                    end
+                 else if (error_location == 0)
+                    begin
+                       
+                    end  
+                 else if (error_location<4)
+                    begin
+                    sec_corrected_data[(error_location -2)- 1] = ~ data[(error_location -2)- 1];  
+                    end  
+                 else if (error_location<8)
+                    begin
+                    sec_corrected_data[(error_location -3)- 1] = ~ data[(error_location -3)- 1];  
+                    end  
+                 else if (error_location<16)
+                    begin
+                    sec_corrected_data[(error_location -4)- 1] = ~ data[(error_location -4)- 1] ; 
+                    end  
+                 else if (error_location<32)
+                    begin
+                    sec_corrected_data[(error_location -5)- 1] = ~ data[(error_location -5)- 1];  
+                    end  
+
+             single_error = error_location[0] & error_location[1] & error_location[2] & error_location[3] & error_location[4] & error_location[5] ;               
         
-    
-    
-endmodule
+             end           
+endmodule 
