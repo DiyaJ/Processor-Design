@@ -4,13 +4,14 @@ reg [31:0] data;
 wire [5:0] parity;
 wire parity_DED;
 
-initial begin
-data = 32'h0;
-#5 
-data = 32'h1;
-#5 
-data = 32'h2;
-end 
+initial
+ begin
+  data = 32'h0;
+  #5 
+  data = 32'h1;
+  #5 
+  data = 32'h2;
+ end 
 
 Parity_Encoder MUT(data, parity, parity_DED);  
  
