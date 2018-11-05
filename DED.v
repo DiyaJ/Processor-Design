@@ -2,7 +2,7 @@
 module DED(
 input single_error,
 input [31:0] data,                   //sec_corrected_data
-input [5:0] parity,    //sec_corrected_parity
+input [5:0] parity,                  //sec_corrected_parity
 input parity_DED,
 output double_error
 );

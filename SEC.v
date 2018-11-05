@@ -61,7 +61,7 @@ module SEC(
                     sec_corrected_data[(error_location -5)- 1] = ~ data[(error_location -5)- 1];  
                     end  
 
-             single_error = error_location[0] & error_location[1] & error_location[2] & error_location[3] & error_location[4] & error_location[5] ;               
+             single_error = error_location[0] | error_location[1] | error_location[2] | error_location[3] | error_location[4] | error_location[5] ;               
         
              end      
 endmodule 
