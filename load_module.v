@@ -3,12 +3,13 @@ input [31:0] data_Cache,
 input [6:0] parity_Cache,
 input special_load_PC,
 output [31:0] data_PC,
-output DED_exception
+output DED_exception,
+output single_error
 );
 
 wire EC_data;
 wire double_error;
-wire single_error;
+ 
 
 assign DED_exception = double_error;
 
