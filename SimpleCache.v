@@ -39,9 +39,8 @@ input wire              error_pwe,
 input wire [31:0]       error_din,
 input wire [6:0]        error_pin,
 input wire [8:0]        error_addr,
-input wire [6:0]        parity_bits,
-output wire [6:0]       cache_parity_dout
-    );
+input wire [6:0]        parity_bits
+);
     
     wire            mem_a_we;
     wire [12:0]     mem_a_addr;
@@ -66,7 +65,7 @@ output wire [6:0]       cache_parity_dout
     wire [31:0]     cache_parity_din;
     wire [8:0]      cache_parity_addr;
     wire            cache_parity_we;
-    wire [31:0]     cache_parity_dout_aux;
+    wire [31:0]     cache_parity_dout;
     
     
     wire [31:0]     allocate_main_mem_dout;
@@ -213,7 +212,6 @@ output wire [6:0]       cache_parity_dout
     assign cache_parity_din = {25'd0, cache_parity_din_aux};
     assign cache_parity_we = error_pwe ? error_pwe : error_dwe ? 0 : cache_data_we;
     assign cache_parity_addr = error_pwe ? error_addr : cache_data_addr;
-    assign cache_parity_dout = cache_parity_dout_aux[6:0];
 
     //instantiate of the parity bits cache implemented with LUT
     cache_data cache_parity_i(
@@ -221,7 +219,7 @@ output wire [6:0]       cache_parity_dout
         .d( cache_parity_din ),
         .clk( clk ),
         .we( cache_parity_we ),
-        .spo( cache_parity_dout_aux )
+        .spo( cache_parity_dout )
     );
     
 

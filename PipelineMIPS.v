@@ -34,8 +34,7 @@ input wire                  error_dwe,  //WE for Data
 input wire                  error_pwe,  //WE for Parity bits
 input wire [31:0]           error_din,  //Data input
 input wire [6:0]            error_pin,  //Parity bits input
-input wire [8:0]           error_addr,  //Address
-output wire [6:0]           parity_dout  //Parity output
+input wire [8:0]           error_addr  //Address
     );
     
     /* the IF stage */
@@ -217,8 +216,7 @@ output wire [6:0]           parity_dout  //Parity output
         .error_pwe(          error_pwe          ),
         .error_din(         error_din           ),
         .error_pin(         error_pin           ),
-        .error_addr(        error_addr          ),
-        .parity_dout(       parity_dout         )
+        .error_addr(        error_addr          )
     );
     
     /* the WB stage */

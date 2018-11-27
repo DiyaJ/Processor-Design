@@ -1,0 +1,19 @@
+R1 <- 1	//Data = 1; Parity bits = 1000011
+R2 <- 2 //Data = 2; Parity bits = 1000101
+R3 <- 3 //Data = 3; Parity bits = 0000110
+R4 <- 4 //Data = 4; Parity bits = 1000110
+sw R1,0(R0)
+sw R2,4(R0)
+sw R3,8(R0)
+sw R4,12(R0)
+
+--------------------------------------
+
+addi r1, r1, 1
+addi r2, r2, 2
+addi r3, r3, 3
+addi r4, r4, 4
+sw R1,0(R0)
+sw R2,4(R0)
+sw R3,8(R0)
+sw R4,12(R0)

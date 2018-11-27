@@ -54,9 +54,8 @@ input wire                      error_dwe,
 input wire                      error_pwe,
 input wire [31:0]               error_din,
 input wire [6:0]                error_pin,
-input wire [8:0]               error_addr,
-output wire [6:0]               parity_dout
-    );
+input wire [8:0]               error_addr
+);
     
     wire [1:0]                  branch_flag;
     wire                        memread_flag;
@@ -188,9 +187,18 @@ output wire [6:0]               parity_dout
         .error_din(         error_din       ),
         .error_pin(         error_pin       ),
         .error_addr(        error_addr      ),
-        .parity_bits(       encoder_parity_bits),
-        .cache_parity_dout( parity_dout     )
+        .parity_bits(       encoder_parity_bits)
     ); 
+    
+    wire [31:0] store_data;
+    wire [6:0]  store_parity;
+    
+    //Instantiate of the Load Module
+    store_module store_module_i(
+        .data_PC( reg2_data ),
+        .data_Cache( store_data ),
+        .parity_Cache( store_parity )
+    );
     
     /* register data to the next stage */
     always @(posedge clk)

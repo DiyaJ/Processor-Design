@@ -46,7 +46,6 @@ module ErrorInjection_tb(
      reg [31:0]           error_din;
      reg [6:0]            error_pin;
      reg [8:0]           error_addr;
-     wire [6:0]            parity_dout;
 	 
 	 assign instruction = instructions[ pc>>2 ];
 	 
@@ -166,8 +165,7 @@ module ErrorInjection_tb(
 	 .error_pwe( error_pwe ),
      .error_din( error_din ),
      .error_pin( error_pin ),
-     .error_addr( error_addr ),
-     .parity_dout( parity_dout )
+     .error_addr( error_addr )
     );
 
 
