@@ -3,7 +3,7 @@ module COR_DET_TB();
 reg [31:0] data;
 reg [6:0] parity;
 wire [31:0] sec_corrected_data;
-wire [5:0] sec_corrected_parity;
+wire [6:0] sec_corrected_parity;
 wire double_error;
 wire single_error;
 
