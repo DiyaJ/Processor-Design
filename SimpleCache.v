@@ -169,8 +169,8 @@ input wire [6:0]        parity_bits
     endcase
     endfunction
     
-    //assign cache_data_we = CACHE_DATA_WE(current_state, hit_cache_data_we, allocate_cache_data_we);
-    assign cache_data_we = error_dwe ? error_dwe : CACHE_DATA_WE(current_state, hit_cache_data_we, allocate_cache_data_we);
+    assign cache_data_we = CACHE_DATA_WE(current_state, hit_cache_data_we, allocate_cache_data_we);
+    //assign cache_data_we = error_dwe ? error_dwe : CACHE_DATA_WE(current_state, hit_cache_data_we, allocate_cache_data_we);
     /* function of the CACHE_DATA_WE */
     function CACHE_DATA_WE;
     input [1:0] state;
@@ -208,9 +208,9 @@ input wire [6:0]        parity_bits
         .spo( cache_data_dout )
     );
     
-    assign cache_parity_din_aux = error_pwe ? error_pin : 0; //Change it to parity_bits;
+    assign cache_parity_din_aux = error_pwe ? error_pin : parity_bits;
     assign cache_parity_din = {25'd0, cache_parity_din_aux};
-    assign cache_parity_we = error_pwe ? error_pwe : error_dwe ? 0 : cache_data_we;
+    assign cache_parity_we = error_pwe ? error_pwe : error_dwe ? 0 : (cache_data_we & (!current_state));
     assign cache_parity_addr = error_pwe ? error_addr : cache_data_addr;
 
     //instantiate of the parity bits cache implemented with LUT

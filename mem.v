@@ -66,6 +66,7 @@ input wire [8:0]               error_addr
     
     //EDC connections
     wire [6:0]                  encoder_parity_bits;
+    wire [31:0] store_data;
         
     /* the MEM operation related signals */
     assign memread_flag = ctr_m[1];
@@ -175,9 +176,9 @@ input wire [8:0]               error_addr
         .CPU_read_en(       memread_flag    ),
         .CPU_read_dout(     mem_out     ),
         .CPU_write_en(      memwrite_flag   ),
-        .CPU_write_din(     reg2_data       ),
+        .CPU_write_din(     store_data      ),
         .CPU_addr(          ALU_out         ),
-        .isCacheStall(       isCacheStall     ),
+        .isCacheStall(       isCacheStall   ),
         .mem_b_we(          user_we         ),
         .mem_b_addr(        user_addr       ),
         .mem_b_din(         user_din        ),
@@ -189,15 +190,12 @@ input wire [8:0]               error_addr
         .error_addr(        error_addr      ),
         .parity_bits(       encoder_parity_bits)
     ); 
-    
-    wire [31:0] store_data;
-    wire [6:0]  store_parity;
-    
-    //Instantiate of the Load Module
+        
+    //Instantiate of the Store Module
     store_module store_module_i(
         .data_PC( reg2_data ),
         .data_Cache( store_data ),
-        .parity_Cache( store_parity )
+        .parity_Cache( encoder_parity_bits )
     );
     
     /* register data to the next stage */

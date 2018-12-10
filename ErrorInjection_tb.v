@@ -66,9 +66,10 @@ module ErrorInjection_tb(
 		error_dwe = 1'd0;
         error_pwe = 1'd0;
 		
-//`ifdef _RAM_INIT__
+//`ifdef _RAM_INIT_
+/*
 		srand = 898989;
-		/* write some data to the Main Memory */
+		// write some data to the Main Memory
 		#5;
 		for( index = 0; index < 20; index = index + 1)
 		begin
@@ -78,6 +79,7 @@ module ErrorInjection_tb(
 		#10;
 		end
 		user_we = 0;
+		*/
 //`endif
 		
 		instructions[9] = 32'd0;
@@ -90,7 +92,7 @@ module ErrorInjection_tb(
 		instructions[16] = 32'd0;
 		instructions[17] = 32'd0;
 		instructions[18] = 32'd0;
-		
+
 		//read the First TESTBENCH
 		//Just stores
 		$readmemb("/home/marc/MIRI/PD/project/MIPS/TestBenchs/errorTestbench1.txt", instructions);
