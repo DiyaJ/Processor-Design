@@ -66,7 +66,16 @@ input wire [8:0]               error_addr
     
     //EDC connections
     wire [6:0]                  encoder_parity_bits;
-    wire [31:0] store_data;
+    wire [31:0]                 store_data;
+    wire [31:0]                 mem_in;
+    wire [31:0]                 reg_mem_out_aux;
+    wire [6:0]                  parity_dout;
+    wire [6:0]                  parity_din;
+    wire [31:0]                 data_PC;
+    wire [6:0]                  EC_parity;
+    wire                        DED_exception;
+    wire                        single_error;
+    wire                        isCacheStall_aux;
         
     /* the MEM operation related signals */
     assign memread_flag = ctr_m[1];
@@ -176,9 +185,9 @@ input wire [8:0]               error_addr
         .CPU_read_en(       memread_flag    ),
         .CPU_read_dout(     mem_out     ),
         .CPU_write_en(      memwrite_flag   ),
-        .CPU_write_din(     store_data      ),
+        .CPU_write_din(     mem_in      ),
         .CPU_addr(          ALU_out         ),
-        .isCacheStall(       isCacheStall   ),
+        .isCacheStall(       isCacheStall_aux   ),
         .mem_b_we(          user_we         ),
         .mem_b_addr(        user_addr       ),
         .mem_b_din(         user_din        ),
@@ -188,7 +197,9 @@ input wire [8:0]               error_addr
         .error_din(         error_din       ),
         .error_pin(         error_pin       ),
         .error_addr(        error_addr      ),
-        .parity_bits(       encoder_parity_bits)
+        .single_error(      single_error    ),
+        .parity_bits(       parity_din      ),
+        .parity_dout(       parity_dout     )
     ); 
         
     //Instantiate of the Store Module
@@ -198,6 +209,22 @@ input wire [8:0]               error_addr
         .parity_Cache( encoder_parity_bits )
     );
     
+    //Instantiate of the Load Module
+    load_module load_module_i(
+        .data_Cache( mem_out ),
+        .parity_Cache( parity_dout ),
+        .data_PC( data_PC ),
+        .EC_parity( EC_parity ),
+        .DED_exception( DED_exception ),
+        .single_error( single_error )
+    );
+    
+    assign isCacheStall = DED_exception ? DED_exception : isCacheStall_aux;
+    assign reg_mem_out_aux = (single_error & memread_flag) ? data_PC : mem_out;
+    
+    assign mem_in = (single_error & memread_flag) ? data_PC : store_data;
+    assign parity_din = (single_error & memread_flag) ? EC_parity : encoder_parity_bits;
+
     /* register data to the next stage */
     always @(posedge clk)
     begin
@@ -211,7 +238,7 @@ input wire [8:0]               error_addr
         end
         else
         begin
-            if( ~isCacheStall )
+            if( ~isCacheStall_aux )
             begin
                 if( ctr_m[5:4] == `JUMP_JAL)
                     reg_ALU_out <= reg_pc + 3'd4;
@@ -219,7 +246,7 @@ input wire [8:0]               error_addr
                     reg_ALU_out <= ALU_out;
                 reg_write_reg <= write_reg;
                 reg_ctr_wb <= ctr_wb;
-                reg_mem_out <= mem_out;
+                reg_mem_out <= reg_mem_out_aux;
                 reg_pc <= pc;
             end
         end

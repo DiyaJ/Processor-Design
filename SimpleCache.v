@@ -39,7 +39,9 @@ input wire              error_pwe,
 input wire [31:0]       error_din,
 input wire [6:0]        error_pin,
 input wire [8:0]        error_addr,
-input wire [6:0]        parity_bits
+input wire              single_error,
+input wire [6:0]        parity_bits,
+output wire [6:0]       parity_dout
 );
     
     wire            mem_a_we;
@@ -169,8 +171,8 @@ input wire [6:0]        parity_bits
     endcase
     endfunction
     
-    assign cache_data_we = CACHE_DATA_WE(current_state, hit_cache_data_we, allocate_cache_data_we);
-    //assign cache_data_we = error_dwe ? error_dwe : CACHE_DATA_WE(current_state, hit_cache_data_we, allocate_cache_data_we);
+    //assign cache_data_we = CACHE_DATA_WE(current_state, hit_cache_data_we, allocate_cache_data_we);
+    assign cache_data_we = error_dwe ? error_dwe : (single_error & CPU_read_en) ? 1 : CACHE_DATA_WE(current_state, hit_cache_data_we, allocate_cache_data_we);
     /* function of the CACHE_DATA_WE */
     function CACHE_DATA_WE;
     input [1:0] state;
@@ -210,7 +212,7 @@ input wire [6:0]        parity_bits
     
     assign cache_parity_din_aux = error_pwe ? error_pin : parity_bits;
     assign cache_parity_din = {25'd0, cache_parity_din_aux};
-    assign cache_parity_we = error_pwe ? error_pwe : error_dwe ? 0 : (cache_data_we & (!current_state));
+    assign cache_parity_we = error_pwe ? error_pwe : error_dwe ? 0 : (cache_data_we & (!current_state)) | (single_error & CPU_read_en);
     assign cache_parity_addr = error_pwe ? error_addr : cache_data_addr;
 
     //instantiate of the parity bits cache implemented with LUT
@@ -222,7 +224,7 @@ input wire [6:0]        parity_bits
         .spo( cache_parity_dout )
     );
     
-
+    assign parity_dout = cache_parity_dout[6:0];
     
     // the extra logic
     wire [20:0]     CPU_addr_tag;

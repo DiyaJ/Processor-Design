@@ -92,6 +92,17 @@ module ErrorInjection_tb(
 		instructions[16] = 32'd0;
 		instructions[17] = 32'd0;
 		instructions[18] = 32'd0;
+		
+		/* We prove that the processor is stall because of the DED 
+		and these instructions should not be executed
+		R1 <- 8
+		R2 <- 8
+		R3 <- 8
+		R4 <- 8 */
+        instructions[24] = 32'b001000_00001_00001_0000000000001000;
+        instructions[25] = 32'b001000_00010_00010_0000000000001000;
+        instructions[26] = 32'b001000_00011_00011_0000000000001000;
+        instructions[27] = 32'b001000_00100_00100_0000000000001000;
 
 		//read the First TESTBENCH
 		//Just stores
@@ -151,7 +162,9 @@ module ErrorInjection_tb(
 		/* wait for the NOP instruction */
         wait( instruction == `NOP);
         /* wait for the testbench to be finished */
-        repeat(5) @(posedge clk);
+        repeat(10) @(posedge clk);
+        
+        
 	 end
 	 
 	 PipelineMIPS PipelineMIPS_inst (
