@@ -11,6 +11,10 @@ initial
   data = 32'h1;
   #5 
   data = 32'h2;
+  #5 
+  data = 32'h3;
+  #5 
+  data = 32'h4;
  end 
 
 Parity_Encoder MUT(data, parity, parity_DED);  
