@@ -41,7 +41,8 @@ input wire [6:0]        error_pin,
 input wire [8:0]        error_addr,
 input wire              single_error,
 input wire [6:0]        parity_bits,
-output wire [6:0]       parity_dout
+output wire [6:0]       parity_dout,
+output wire             DED_exception_mem
 );
     
     wire            mem_a_we;
@@ -68,6 +69,12 @@ output wire [6:0]       parity_dout
     wire [8:0]      cache_parity_addr;
     wire            cache_parity_we;
     wire [31:0]     cache_parity_dout;
+    wire [6:0]      encoder_parity_bits;
+    
+    wire [31:0]     data_PC_mem;
+    wire [6:0]      EC_parity_mem;
+    wire            DED_exception_mem_aux;
+    wire            single_error_mem;
     
     
     wire [31:0]     allocate_main_mem_dout;
@@ -124,7 +131,8 @@ output wire [6:0]       parity_dout
     
     //instantiate of the main memory implemented with BRAM
     assign mem_a_we = wb_main_mem_we;
-    assign mem_a_din = wb_main_mem_din;
+    //assign mem_a_din = wb_main_mem_din;
+    assign mem_a_din = data_PC_mem;
     assign mem_a_addr = (current_state == WBACK) ? wb_main_mem_addr : allocate_main_mem_addr;
     main_mem main_mem_i(
         .clka( clk ),
@@ -138,6 +146,25 @@ output wire [6:0]       parity_dout
         .dinb( mem_b_din ),
         .doutb( mem_b_dout )
     );
+    
+    //Instantiate of the Load Module for mem
+    load_module load_module_i_mem(
+        .data_Cache( wb_main_mem_din ),
+        .parity_Cache( cache_parity_dout ),
+        .data_PC( data_PC_mem ),
+        .EC_parity( EC_parity_mem ),
+        .DED_exception( DED_exception_mem_aux ),
+        .single_error( single_error_mem )
+    );
+    
+    //Instantiate of the Store Module for mem
+    store_module store_module_i_mem(
+        .data_PC( cache_data_din ),
+        .data_Cache( store_data ),
+        .parity_Cache( encoder_parity_bits )
+    );
+    
+    assign DED_exception_mem = DED_exception_mem_aux & mem_a_we;
     
     //instantiate of the cache_tag implemented with LUT
     assign cache_tag_dout_tag = cache_tag_dout[20:0];
@@ -210,9 +237,9 @@ output wire [6:0]       parity_dout
         .spo( cache_data_dout )
     );
     
-    assign cache_parity_din_aux = error_pwe ? error_pin : parity_bits;
+    assign cache_parity_din_aux = error_pwe ? error_pin : CPU_write_en ? encoder_parity_bits : parity_bits;
     assign cache_parity_din = {25'd0, cache_parity_din_aux};
-    assign cache_parity_we = error_pwe ? error_pwe : error_dwe ? 0 : (cache_data_we & (!current_state)) | (single_error & CPU_read_en);
+    assign cache_parity_we = error_pwe ? error_pwe : error_dwe ? 0 : (cache_data_we & (!current_state)) | (cache_data_we & (current_state == ALLOCATE)) | (single_error & CPU_read_en);
     assign cache_parity_addr = error_pwe ? error_addr : cache_data_addr;
 
     //instantiate of the parity bits cache implemented with LUT
@@ -307,6 +334,8 @@ output wire [6:0]       parity_dout
     begin
         if( rst )
             current_state <= IDLE;
+        else if (DED_exception_mem_aux & mem_a_we)
+            current_state <= current_state;
         else
             current_state <= next_state;
     end

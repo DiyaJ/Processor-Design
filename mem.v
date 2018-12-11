@@ -75,6 +75,7 @@ input wire [8:0]               error_addr
     wire [6:0]                  EC_parity;
     wire                        DED_exception;
     wire                        single_error;
+    wire                        DED_exception_mem;
     wire                        isCacheStall_aux;
         
     /* the MEM operation related signals */
@@ -199,7 +200,8 @@ input wire [8:0]               error_addr
         .error_addr(        error_addr      ),
         .single_error(      single_error    ),
         .parity_bits(       parity_din      ),
-        .parity_dout(       parity_dout     )
+        .parity_dout(       parity_dout     ),
+        .DED_exception_mem( DED_exception_mem)
     ); 
         
     //Instantiate of the Store Module
@@ -219,7 +221,7 @@ input wire [8:0]               error_addr
         .single_error( single_error )
     );
     
-    assign isCacheStall = DED_exception ? DED_exception : isCacheStall_aux;
+    assign isCacheStall = ((DED_exception & memread_flag) | DED_exception_mem) ? 1 : isCacheStall_aux;
     assign reg_mem_out_aux = (single_error & memread_flag) ? data_PC : mem_out;
     
     assign mem_in = (single_error & memread_flag) ? data_PC : store_data;

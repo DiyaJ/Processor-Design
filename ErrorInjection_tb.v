@@ -115,7 +115,7 @@ module ErrorInjection_tb(
 		/* wait for the NOP instruction */
 		wait( instruction == `NOP);
 		/* wait for the testbench to be finished */
-		repeat(5) @(posedge clk);
+		repeat(20) @(posedge clk);
 		
 		
 		/* Write the errors in the cache */
@@ -129,22 +129,22 @@ module ErrorInjection_tb(
 		error_addr = 9'd1;
 		repeat(1) @(posedge clk)
 		
-		/* Change 1 bit of the parity bits (M_p[2] <- 0000111) */
+		/* Change 1 bit of the parity bits (M_p[8] <- 0000111) */
         error_dwe = 1'd0;
         error_pwe = 1'd1;
         error_din = 32'd3;
         error_pin = 7'b0000111;
-        error_addr = 9'd2;
+        error_addr = 9'd8;
         repeat(1) @(posedge clk)
         
         /* Change 2 bits */
-        /* M[3] <- 5) */
-        /* M_p[3] <- 1000111) */
+        /* M[9] <- 5) */
+        /* M_p[9] <- 1000111) */
         error_dwe = 1'd1;
         error_pwe = 1'd1;
         error_din = 32'd5;
         error_pin = 7'b1000111;
-        error_addr = 9'd3;
+        error_addr = 9'd9;
         repeat(1) @(posedge clk)
 		
 		error_dwe = 1'd0;
@@ -162,7 +162,7 @@ module ErrorInjection_tb(
 		/* wait for the NOP instruction */
         wait( instruction == `NOP);
         /* wait for the testbench to be finished */
-        repeat(10) @(posedge clk);
+        repeat(40) @(posedge clk);
         
         
 	 end
