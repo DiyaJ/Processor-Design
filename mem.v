@@ -53,7 +53,7 @@ output wire [31:0]	             user_dout,
 input wire                      error_dwe,
 input wire                      error_pwe,
 input wire [31:0]               error_din,
-input wire [6:0]                error_pin,
+input wire [15:0]                error_pin,
 input wire [8:0]               error_addr
 );
     
@@ -65,17 +65,17 @@ input wire [8:0]               error_addr
     wire [1:0]                  next_token;
     
     //EDC connections
-    wire [6:0]                  encoder_parity_bits;
+    wire [15:0]                  encoder_parity_bits;
     wire [31:0]                 store_data;
     wire [31:0]                 mem_in;
     wire [31:0]                 reg_mem_out_aux;
     wire [6:0]                  parity_dout;
-    wire [6:0]                  parity_din;
+    wire [15:0]                  parity_din;
     wire [31:0]                 data_PC;
-    wire [6:0]                  EC_parity;
-    wire                        DED_exception;
-    wire                        single_error;
-    wire                        DED_exception_mem;
+    wire [15:0]                  EC_parity;
+    wire                        TED_exception;
+    wire                        single_double_error;
+    wire                        TED_exception_mem;
     wire                        isCacheStall_aux;
         
     /* the MEM operation related signals */
@@ -198,10 +198,10 @@ input wire [8:0]               error_addr
         .error_din(         error_din       ),
         .error_pin(         error_pin       ),
         .error_addr(        error_addr      ),
-        .single_error(      single_error    ),
+        .single_double_error(      single_double_error    ),
         .parity_bits(       parity_din      ),
         .parity_dout(       parity_dout     ),
-        .DED_exception_mem( DED_exception_mem)
+        .TED_exception_mem( TED_exception_mem)
     ); 
         
     //Instantiate of the Store Module
@@ -215,17 +215,16 @@ input wire [8:0]               error_addr
     load_module load_module_i(
         .data_Cache( mem_out ),
         .parity_Cache( parity_dout ),
-        .data_PC( data_PC ),
-        .EC_parity( EC_parity ),
-        .DED_exception( DED_exception ),
-        .single_error( single_error )
+        .corrected_data( data_PC ),
+        .triple_error( TED_exception ),
+        .single_double_error ( single_double_error )
     );
     
-    assign isCacheStall = ((DED_exception & memread_flag) | DED_exception_mem) ? 1 : isCacheStall_aux;
-    assign reg_mem_out_aux = (single_error & memread_flag) ? data_PC : mem_out;
+    assign isCacheStall = ((TED_exception & memread_flag) | TED_exception_mem) ? 1 : isCacheStall_aux;
+    assign reg_mem_out_aux = (single_double_error & memread_flag) ? data_PC : mem_out;
     
-    assign mem_in = (single_error & memread_flag) ? data_PC : store_data;
-    assign parity_din = (single_error & memread_flag) ? EC_parity : encoder_parity_bits;
+    assign mem_in = (single_double_error & memread_flag) ? data_PC : store_data;
+    assign parity_din = encoder_parity_bits;
 
     /* register data to the next stage */
     always @(posedge clk)

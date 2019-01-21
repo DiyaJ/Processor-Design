@@ -33,7 +33,7 @@ output wire [31:0]	         user_dout,
 input wire                  error_dwe,  //WE for Data
 input wire                  error_pwe,  //WE for Parity bits
 input wire [31:0]           error_din,  //Data input
-input wire [6:0]            error_pin,  //Parity bits input
+input wire [15:0]            error_pin,  //Parity bits input
 input wire [8:0]           error_addr  //Address
     );
     
