@@ -44,7 +44,7 @@ module ErrorInjection_tb(
      reg                  error_dwe;
      reg                  error_pwe;
      reg [31:0]           error_din;
-     reg [6:0]            error_pin;
+     reg [15:0]            error_pin;
      reg [8:0]           error_addr;
 	 
 	 assign instruction = instructions[ pc>>2 ];
@@ -81,7 +81,16 @@ module ErrorInjection_tb(
 		user_we = 0;
 		*/
 //`endif
-		
+		instructions[0] = 32'd0;
+		instructions[1] = 32'd0;
+		instructions[1] = 32'd0;
+		instructions[2] = 32'd0;
+		instructions[3] = 32'd0;
+		instructions[4] = 32'd0;
+		instructions[5] = 32'd0;
+		instructions[6] = 32'd0;
+		instructions[7] = 32'd0;
+		instructions[8] = 32'd0;
 		instructions[9] = 32'd0;
 		instructions[10] = 32'd0;
 		instructions[11] = 32'd0;
@@ -92,17 +101,6 @@ module ErrorInjection_tb(
 		instructions[16] = 32'd0;
 		instructions[17] = 32'd0;
 		instructions[18] = 32'd0;
-		
-		/* We prove that the processor is stall because of the DED 
-		and these instructions should not be executed
-		R1 <- 8
-		R2 <- 8
-		R3 <- 8
-		R4 <- 8 */
-        instructions[24] = 32'b001000_00001_00001_0000000000001000;
-        instructions[25] = 32'b001000_00010_00010_0000000000001000;
-        instructions[26] = 32'b001000_00011_00011_0000000000001000;
-        instructions[27] = 32'b001000_00100_00100_0000000000001000;
 
 		//read the First TESTBENCH
 		//Just stores
@@ -111,46 +109,37 @@ module ErrorInjection_tb(
 		repeat(3) @(posedge clk)
 		#1;
 		rst = 0;
+        error_pwe = 1'd0;
+        error_pin = 16'd0;
 		
 		/* wait for the NOP instruction */
-		wait( instruction == `NOP);
+		//wait( instruction == `NOP);
 		/* wait for the testbench to be finished */
-		repeat(20) @(posedge clk);
+		//repeat(20) @(posedge clk);
 		
 		
 		/* Write the errors in the cache */
 		/* M[0] will not have errors */
 		
-		/* Change 1 bit of the data (M[1] <- 3) */
+        /* Change 1 bit of the data (M[1] <- 1) */
 		error_dwe = 1'd1;
-		error_pwe = 1'd0;
-		error_din = 32'd3;
-		error_pin = 7'd0;
+		error_din = 32'd1;
 		error_addr = 9'd1;
 		repeat(1) @(posedge clk)
 		
-		/* Change 1 bit of the parity bits (M_p[8] <- 0000111) */
-        error_dwe = 1'd0;
-        error_pwe = 1'd1;
+		/* Change 2 bits of the data (M[2] <- 3) */
         error_din = 32'd3;
-        error_pin = 7'b0000111;
-        error_addr = 9'd8;
+        error_addr = 9'd2;
         repeat(1) @(posedge clk)
-        
-        /* Change 2 bits */
-        /* M[9] <- 5) */
-        /* M_p[9] <- 1000111) */
-        error_dwe = 1'd1;
-        error_pwe = 1'd1;
-        error_din = 32'd5;
-        error_pin = 7'b1000111;
-        error_addr = 9'd9;
+        /* Change 3 bits of the data (M[3] <- 7) */
+        error_din = 32'd7;
+        error_addr = 9'd3;
         repeat(1) @(posedge clk)
 		
 		error_dwe = 1'd0;
         error_pwe = 1'd0;
         error_din = 32'd3;
-        error_pin = 7'd0;
+        error_pin = 16'd0;
         error_addr = 9'd0;
 		repeat(1) @(posedge clk)
 		
