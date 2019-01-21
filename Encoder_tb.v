@@ -1,8 +1,7 @@
 `timescale 1ns / 1ps
 module Encoder_TB();
 reg [31:0] data;
-wire [5:0] parity;
-wire parity_DED;
+wire [15:0] parity;
 
 initial
  begin
@@ -17,6 +16,6 @@ initial
   data = 32'h4;
  end 
 
-Parity_Encoder MUT(data, parity, parity_DED);  
+store_module MUT(data, parity);  
  
 endmodule 

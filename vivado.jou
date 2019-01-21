@@ -1,0 +1,126 @@
+#-----------------------------------------------------------
+# Vivado v2015.4 (64-bit)
+# SW Build 1412921 on Wed Nov 18 09:44:32 MST 2015
+# IP Build 1412160 on Tue Nov 17 13:47:24 MST 2015
+# Start of session at: Mon Jan 21 19:56:28 2019
+# Process ID: 21812
+# Current directory: /home/marc/MIRI/PD/project/Processor-Design/DECTED
+# Command line: vivado
+# Log file: /home/marc/MIRI/PD/project/Processor-Design/DECTED/vivado.log
+# Journal file: /home/marc/MIRI/PD/project/Processor-Design/DECTED/vivado.jou
+#-----------------------------------------------------------
+start_gui
+open_project /home/marc/MIRI/PD/project/MIPS/project/project.xpr
+remove_files /home/marc/MIRI/PD/project/MIPS/project/project.srcs/sources_1/new/store_module.v
+update_compile_order -fileset sources_1
+remove_files /home/marc/MIRI/PD/project/MIPS/project/project.srcs/sources_1/new/load_module.v
+update_compile_order -fileset sources_1
+add_files -norecurse {/home/marc/MIRI/PD/project/Processor-Design/DECTED/Load_TB.v /home/marc/MIRI/PD/project/Processor-Design/DECTED/Encoder_tb.v /home/marc/MIRI/PD/project/Processor-Design/DECTED/Synd.v /home/marc/MIRI/PD/project/Processor-Design/DECTED/Corrector_double.v /home/marc/MIRI/PD/project/Processor-Design/DECTED/SEC_tb.v /home/marc/MIRI/PD/project/Processor-Design/DECTED/load_module.v /home/marc/MIRI/PD/project/Processor-Design/DECTED/Decode_A.v /home/marc/MIRI/PD/project/Processor-Design/DECTED/Decode_B.v /home/marc/MIRI/PD/project/Processor-Design/DECTED/Encoder_A.v /home/marc/MIRI/PD/project/Processor-Design/DECTED/Encoder_B.v /home/marc/MIRI/PD/project/Processor-Design/DECTED/Double_Decode.v /home/marc/MIRI/PD/project/Processor-Design/DECTED/control.v /home/marc/MIRI/PD/project/Processor-Design/DECTED/Corrector_A.v /home/marc/MIRI/PD/project/Processor-Design/DECTED/store_module.v /home/marc/MIRI/PD/project/Processor-Design/DECTED/Corrector_B.v}
+update_compile_order -fileset sources_1
+update_compile_order -fileset sources_1
+update_compile_order -fileset sources_1
+launch_simulation
+open_wave_config /home/marc/MIRI/PD/project/MIPS/project/ErrorInjection_tb_behav.wcfg
+source ErrorInjection_tb.tcl
+close_sim
+launch_simulation
+open_wave_config /home/marc/MIRI/PD/project/MIPS/project/ErrorInjection_tb_behav.wcfg
+source ErrorInjection_tb.tcl
+close_sim
+launch_simulation
+open_wave_config /home/marc/MIRI/PD/project/MIPS/project/ErrorInjection_tb_behav.wcfg
+source ErrorInjection_tb.tcl
+add_wave {{/ErrorInjection_tb/PipelineMIPS_inst/mem_inst/SimpleCache_i/cache_data_i/U0/memory[3]}} {{/ErrorInjection_tb/PipelineMIPS_inst/mem_inst/SimpleCache_i/cache_data_i/U0/memory[2]}} 
+save_wave_config {/home/marc/MIRI/PD/project/MIPS/project/ErrorInjection_tb_behav.wcfg}
+close_sim
+launch_simulation
+open_wave_config /home/marc/MIRI/PD/project/MIPS/project/ErrorInjection_tb_behav.wcfg
+source ErrorInjection_tb.tcl
+close_sim
+launch_simulation
+open_wave_config /home/marc/MIRI/PD/project/MIPS/project/ErrorInjection_tb_behav.wcfg
+source ErrorInjection_tb.tcl
+close_sim
+launch_simulation
+open_wave_config /home/marc/MIRI/PD/project/MIPS/project/ErrorInjection_tb_behav.wcfg
+source ErrorInjection_tb.tcl
+close_sim
+launch_simulation
+open_wave_config /home/marc/MIRI/PD/project/MIPS/project/ErrorInjection_tb_behav.wcfg
+source ErrorInjection_tb.tcl
+close_sim
+launch_simulation
+open_wave_config /home/marc/MIRI/PD/project/MIPS/project/ErrorInjection_tb_behav.wcfg
+source ErrorInjection_tb.tcl
+close_sim
+launch_simulation
+open_wave_config /home/marc/MIRI/PD/project/MIPS/project/ErrorInjection_tb_behav.wcfg
+source ErrorInjection_tb.tcl
+close_sim
+launch_simulation
+open_wave_config /home/marc/MIRI/PD/project/MIPS/project/ErrorInjection_tb_behav.wcfg
+source ErrorInjection_tb.tcl
+close_sim
+launch_simulation
+open_wave_config /home/marc/MIRI/PD/project/MIPS/project/ErrorInjection_tb_behav.wcfg
+source ErrorInjection_tb.tcl
+close_sim
+launch_simulation
+open_wave_config /home/marc/MIRI/PD/project/MIPS/project/ErrorInjection_tb_behav.wcfg
+source ErrorInjection_tb.tcl
+close_sim
+launch_simulation
+open_wave_config /home/marc/MIRI/PD/project/MIPS/project/ErrorInjection_tb_behav.wcfg
+source ErrorInjection_tb.tcl
+add_wave {{/ErrorInjection_tb/PipelineMIPS_inst/isCacheStall}} 
+restart
+run 1000 ns
+add_wave {{/ErrorInjection_tb/PipelineMIPS_inst/mem_inst/TED_exception_mem}} 
+add_wave {{/ErrorInjection_tb/PipelineMIPS_inst/mem_inst/TED_exception}} 
+restart
+run 1000 ns
+add_wave {{/ErrorInjection_tb/PipelineMIPS_inst/mem_inst/SimpleCache_i/isCacheStall}} 
+restart
+run 1000 ns
+add_wave {{/ErrorInjection_tb/PipelineMIPS_inst/mem_inst/memwrite_flag}} 
+restart
+run 1000 ns
+save_wave_config {/home/marc/MIRI/PD/project/MIPS/project/ErrorInjection_tb_behav.wcfg}
+close_sim
+launch_simulation
+open_wave_config /home/marc/MIRI/PD/project/MIPS/project/ErrorInjection_tb_behav.wcfg
+source ErrorInjection_tb.tcl
+close_sim
+launch_simulation
+open_wave_config /home/marc/MIRI/PD/project/MIPS/project/ErrorInjection_tb_behav.wcfg
+source ErrorInjection_tb.tcl
+close_sim
+launch_simulation
+open_wave_config /home/marc/MIRI/PD/project/MIPS/project/ErrorInjection_tb_behav.wcfg
+source ErrorInjection_tb.tcl
+close_sim
+launch_simulation
+open_wave_config /home/marc/MIRI/PD/project/MIPS/project/ErrorInjection_tb_behav.wcfg
+source ErrorInjection_tb.tcl
+close_sim
+launch_simulation
+open_wave_config /home/marc/MIRI/PD/project/MIPS/project/ErrorInjection_tb_behav.wcfg
+source ErrorInjection_tb.tcl
+close_sim
+launch_simulation
+open_wave_config /home/marc/MIRI/PD/project/MIPS/project/ErrorInjection_tb_behav.wcfg
+source ErrorInjection_tb.tcl
+close_sim
+launch_simulation
+open_wave_config /home/marc/MIRI/PD/project/MIPS/project/ErrorInjection_tb_behav.wcfg
+source ErrorInjection_tb.tcl
+close_sim
+launch_simulation
+open_wave_config /home/marc/MIRI/PD/project/MIPS/project/ErrorInjection_tb_behav.wcfg
+source ErrorInjection_tb.tcl
+close_sim
+launch_simulation
+open_wave_config /home/marc/MIRI/PD/project/MIPS/project/ErrorInjection_tb_behav.wcfg
+source ErrorInjection_tb.tcl
+save_wave_config {/home/marc/MIRI/PD/project/MIPS/project/ErrorInjection_tb_behav.wcfg}
+close_sim

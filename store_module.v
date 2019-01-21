@@ -1,16 +1,21 @@
 module store_module(
 input [31:0] data_PC,
 output [31:0] data_Cache,
-output [6:0] parity_Cache
+output [15:0] parity_Cache
 );
 
-wire[5:0] encoder_parity;
-wire encoder_parity_DED;
+wire[6:0] chk_encoder_A;
+wire[7:0] chk_encoder_B;
+wire parity_B;
 
 assign data_Cache = data_PC;
-assign parity_Cache[5:0] = encoder_parity;
-assign parity_Cache[6] = encoder_parity_DED;
+assign parity_Cache[6:0] = chk_encoder_A;
+assign parity_Cache[14:7] = chk_encoder_B;
+assign parity_Cache[15] = parity_B;
 
-parity_encoder parity_encoder_i (data_PC,encoder_parity,encoder_parity_DED);
+Parity_Encoder_A encoder_A (data_PC,chk_encoder_A);
+Parity_Encoder_B encoder_B (data_PC,chk_encoder_B);
+
+assign parity_B = chk_encoder_B[0] ^ chk_encoder_B[1] ^ chk_encoder_B[2] ^ chk_encoder_B[3] ^ chk_encoder_B[4] ^ chk_encoder_B[5] ^ chk_encoder_B[6] ^ chk_encoder_B[7];
 
 endmodule

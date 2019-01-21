@@ -1,18 +1,41 @@
 module load_module(
-input [31:0] data_Cache,
-input [6:0] parity_Cache,
-output [31:0] data_PC,
-output [6:0] EC_parity,
-output DED_exception,
-output single_error
+	input [31:0] data_Cache,
+	input [15:0] parity_Cache,
+	output [31:0] corrected_data,
+<<<<<<< HEAD
+    output triple_error,             //stall the PC
+    output single_double_error
+=======
+        output triple_error,             //stall the PC
+        output single_double_error
+>>>>>>> 1e1b8fab2044082309e233545e46c55a2c5872d9
 );
 
-correction_detection cor_det(
-    data_Cache,
-    parity_Cache,
-    data_PC,
-    EC_parity,
-    DED_exception,
-    single_error);
+wire [6:0] synd_A;
+wire [7:0] synd_B;
+wire parity_B;
 
-endmodule
+wire [31:0] corrected_data_A;
+wire [31:0] corrected_data_B;
+wire [31:0] corrected_data_dbl;
+ 
+wire [31:0] sgl_A_loc, sgl_B_loc, dbl_loc;
+
+wire [1:0] select_data;
+
+assign corrected_data = (select_data==3)?corrected_data_dbl:((select_data == 2)?corrected_data_B:((select_data==1)?corrected_data_A:data_Cache));
+
+
+Synd synd(data_Cache, parity_Cache, synd_A, synd_B, parity_B);
+
+Decode_A dec_A (synd_A, sgl_A_loc);
+Decode_B dec_B (synd_B, sgl_B_loc);
+Decode_dbl decode_dbl (synd_A, synd_B, dbl_loc);
+
+control cntrl (synd_A, synd_B, sgl_A_loc, sgl_B_loc, parity_B, select_data, triple_error, single_double_error);
+
+Corrector_A cor_A (data_Cache, sgl_A_loc, corrected_data_A);
+Corrector_B cor_B (data_Cache, sgl_B_loc, corrected_data_B);
+Corrector_double cor_dbl (data_Cache, dbl_loc, corrected_data_dbl);
+
+endmodule 
