@@ -41,6 +41,6 @@ initial
  
  end 
 
-load_module MUT(data, parity, corrected_data, triple_error);  
+load_module MUT(data, parity, corrected_data, triple_error, single_double_error);  
  
 endmodule

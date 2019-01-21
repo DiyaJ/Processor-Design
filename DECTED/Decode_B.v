@@ -32,6 +32,70 @@ always @(*)
         begin
         sgl_B_loc[4]=1;
         end 
+     else if (Synd_B==41)
+        begin
+        sgl_B_loc[5]=1;
+        end 
+     else if (Synd_B==69)
+        begin
+        sgl_B_loc[6]=1;
+        end 
+     else if (Synd_B==196)
+        begin
+        sgl_B_loc[7]=1;
+        end 
+     else if (Synd_B==82)
+        begin
+        sgl_B_loc[8]=1;
+        end 
+     else if (Synd_B==138)
+        begin
+        sgl_B_loc[9]=1;
+        end 
+     else if (Synd_B==98)
+        begin
+        sgl_B_loc[10]=1;
+        end 
+     else if (Synd_B==49)
+        begin
+        sgl_B_loc[4]=1;
+        end 
+     else if (Synd_B==49)
+        begin
+        sgl_B_loc[4]=1;
+        end 
+     else if (Synd_B==49)
+        begin
+        sgl_B_loc[4]=1;
+        end 
+     else if (Synd_B==49)
+        begin
+        sgl_B_loc[4]=1;
+        end 
+     else if (Synd_B==49)
+        begin
+        sgl_B_loc[4]=1;
+        end 
+     else if (Synd_B==49)
+        begin
+        sgl_B_loc[4]=1;
+        end 
+     else if (Synd_B==49)
+        begin
+        sgl_B_loc[4]=1;
+        end 
+     else if (Synd_B==49)
+        begin
+        sgl_B_loc[4]=1;
+        end 
+     else if (Synd_B==49)
+        begin
+        sgl_B_loc[4]=1;
+        end 
+     else if (Synd_B==49)
+        begin
+        sgl_B_loc[4]=1;
+        end 
      else 
        begin
        sgl_B_loc = 4'b0111;

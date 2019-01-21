@@ -6,7 +6,8 @@ module control(
     input [31:0] sgl_B_loc,
     input par_b,
     output reg [2:0] select_data,
-    output reg triple_error 
+    output reg triple_error,
+    output reg single_double_error 
 
 );
 wire sgl_tpl, lb0;
@@ -22,6 +23,7 @@ always @(*)
      number_B = Synd_B[0] + Synd_B[1] + Synd_B[2] + Synd_B[3] + Synd_B[4] + Synd_B[5] + Synd_B[6] + Synd_B[7];
 
      triple_error = 0;
+     single_double_error = 0;
      //no error
      if (number_A == 0 && number_B == 0 && par_b == 0 && sgl_tpl == 0 && lb0 == 0)
         begin
@@ -31,11 +33,13 @@ always @(*)
      else if (number_A == 3 && number_B == 3 && par_b == 0 && sgl_tpl == 0 && lb0 == 0)
         begin
         select_data = 2'b1;
+        single_double_error = 1;
         end 
      //double error
      else if ((number_A == 2 || number_A == 4 || number_A == 6 )&& (number_B == 2 || number_B == 4 || number_B == 6 ) && par_b == 0 )
         begin
         select_data = 2'b11;
+        single_double_error = 1;
         end
      //triple error
      else if (number_A == 3 && number_B == 3 && lb0 ==1 )
